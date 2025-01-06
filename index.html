@@ -74,46 +74,32 @@
         let startX, startY;
         let currentX = 0, currentY = 0;
 
-        const startInteraction = (x, y) => {
+        card.addEventListener('mousedown', (e) => {
             isDragging = true;
-            startX = x;
-            startY = y;
-        };
+            startX = e.clientX;
+            startY = e.clientY;
+        });
 
-        const moveInteraction = (x, y) => {
+        window.addEventListener('mousemove', (e) => {
             if (!isDragging) return;
 
-            const deltaX = x - startX;
-            const deltaY = y - startY;
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
             currentX += deltaX * 0.5; // Rotación horizontal (eje Y)
-            currentY += deltaY * 0.5; // Rotación vertical (eje X)
+            currentY -= deltaY * 0.5; // Rotación vertical (eje X)
 
             card.style.transform = `rotateX(${currentY}deg) rotateY(${currentX}deg)`;
 
-            startX = x;
-            startY = y;
-        };
+            startX = e.clientX;
+            startY = e.clientY;
+        });
 
-        const endInteraction = () => {
+        window.addEventListener('mouseup', () => {
             isDragging = false;
-        };
-
-        // Desktop event listeners
-        card.addEventListener('mousedown', (e) => startInteraction(e.clientX, e.clientY));
-        window.addEventListener('mousemove', (e) => moveInteraction(e.clientX, e.clientY));
-        window.addEventListener('mouseup', endInteraction);
-
-        // Mobile event listeners
-        card.addEventListener('touchstart', (e) => {
-            const touch = e.touches[0];
-            startInteraction(touch.clientX, touch.clientY);
         });
-
-        window.addEventListener('touchmove', (e) => {
-            const touch = e.touches[0];
-            moveInteraction(touch.clientX, touch.clientY);
-        });
-
+    </script>
+</body>
+</html>
         window.addEventListener('touchend', endInteraction);
     </script>
 </body>
