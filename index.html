@@ -41,11 +41,11 @@
         }
 
         .front {
-            background: url('imagen frontal.png') center/cover;
+            background: url('front-image.jpg') center/cover;
         }
 
         .back {
-            background: url('imagen trasera.png') center/cover;
+            background: url('back-image.jpg') center/cover;
             transform: rotateY(180deg);
         }
 
@@ -74,29 +74,47 @@
         let startX, startY;
         let currentX = 0, currentY = 0;
 
-        card.addEventListener('mousedown', (e) => {
+        const startInteraction = (x, y) => {
             isDragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
-        });
+            startX = x;
+            startY = y;
+        };
 
-        window.addEventListener('mousemove', (e) => {
+        const moveInteraction = (x, y) => {
             if (!isDragging) return;
 
-            const deltaX = e.clientX - startX;
-            const deltaY = e.clientY - startY;
-            currentX += deltaX * 0.5;
-            currentY -= deltaY * 0.5;
+            const deltaX = x - startX;
+            const deltaY = y - startY;
+            currentX += deltaX * 0.5; // Rotación horizontal (eje Y)
+            currentY += deltaY * 0.5; // Rotación vertical (eje X)
 
             card.style.transform = `rotateX(${currentY}deg) rotateY(${currentX}deg)`;
 
-            startX = e.clientX;
-            startY = e.clientY;
+            startX = x;
+            startY = y;
+        };
+
+        const endInteraction = () => {
+            isDragging = false;
+        };
+
+        // Desktop event listeners
+        card.addEventListener('mousedown', (e) => startInteraction(e.clientX, e.clientY));
+        window.addEventListener('mousemove', (e) => moveInteraction(e.clientX, e.clientY));
+        window.addEventListener('mouseup', endInteraction);
+
+        // Mobile event listeners
+        card.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            startInteraction(touch.clientX, touch.clientY);
         });
 
-        window.addEventListener('mouseup', () => {
-            isDragging = false;
+        window.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            moveInteraction(touch.clientX, touch.clientY);
         });
+
+        window.addEventListener('touchend', endInteraction);
     </script>
 </body>
 </html>
